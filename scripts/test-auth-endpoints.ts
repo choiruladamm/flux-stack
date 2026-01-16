@@ -10,7 +10,10 @@ async function testSignup() {
 
   const response = await fetch(`${BASE_URL}/api/auth/sign-up/email`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      Origin: BASE_URL,
+    },
     body: JSON.stringify(TEST_USER),
   });
 
@@ -103,30 +106,59 @@ async function runTests() {
       process.exit(1);
     }
 
-    const loginResult = await testLogin();
-    if (!loginResult) {
-      console.log('\n❌ Tests failed at login');
+    console.log('\n🧪 Testing Login...');
+    const loginResponse = await fetch(`${BASE_URL}/api/auth/sign-in/email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Origin: BASE_URL,
+      },
+      body: JSON.stringify({
+        email: TEST_USER.email,
+        password: TEST_USER.password,
+      }),
+    });
+
+    const loginResult = await loginResponse.json();
+    const cookie = loginResponse.headers.get('set-cookie');
+
+    if (!loginResponse.ok || !cookie) {
+      console.error('❌ Login failed or no cookie:', loginResult);
+      process.exit(1);
+    }
+    console.log('✅ Login successful (Session cookie captured)');
+
+    console.log('\n🧪 Testing Session...');
+    const sessionResponse = await fetch(`${BASE_URL}/api/auth/me`, {
+      headers: { Cookie: cookie },
+    });
+
+    const sessionResult = await sessionResponse.json();
+    if (!sessionResponse.ok) {
+      console.error('❌ Session check failed:', sessionResult);
       process.exit(1);
     }
 
-    const sessionToken = loginResult.token;
-    if (!sessionToken) {
-      console.error('\n❌ No session token returned from login');
+    console.log('✅ Session valid');
+    console.log('   User ID:', sessionResult.data?.user?.id ? '✓' : '✗');
+    console.log('   Email:', sessionResult.data?.user?.email || 'N/A');
+
+    console.log('\n🧪 Testing Logout...');
+    const logoutResponse = await fetch(`${BASE_URL}/api/auth/sign-out`, {
+      method: 'POST',
+      headers: {
+        Cookie: cookie,
+        Origin: BASE_URL,
+      },
+    });
+
+    if (!logoutResponse.ok) {
+      const logoutResult = await logoutResponse.json();
+      console.error('❌ Logout failed:', logoutResult);
       process.exit(1);
     }
 
-    const sessionResult = await testSession(sessionToken);
-    if (!sessionResult) {
-      console.log('\n❌ Tests failed at session check');
-      process.exit(1);
-    }
-
-    const logoutSuccess = await testLogout(sessionToken);
-    if (!logoutSuccess) {
-      console.log('\n❌ Tests failed at logout');
-      process.exit(1);
-    }
-
+    console.log('✅ Logout successful');
     console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('✅ All auth tests passed!\n');
   } catch (error) {

@@ -1,4 +1,5 @@
 import { ROUTES, PASSWORD, HTTP_STATUS } from '../../constants';
+import { successResponseSchema, errorResponseSchema, errorExamples } from '../schemas/responses';
 
 export const authPaths = {
   [ROUTES.AUTH.SIGN_UP]: {
@@ -29,6 +30,49 @@ export const authPaths = {
       responses: {
         [HTTP_STATUS.OK]: {
           description: 'User created successfully',
+          content: {
+            'application/json': {
+              schema: successResponseSchema(
+                {
+                  type: 'object',
+                  properties: {
+                    user: {
+                      type: 'object',
+                      properties: {
+                        id: { type: 'string' },
+                        email: { type: 'string' },
+                        name: { type: 'string' },
+                      },
+                    },
+                  },
+                },
+                { includeMeta: false }
+              ),
+              examples: {
+                success: {
+                  value: {
+                    success: true,
+                    data: {
+                      user: {
+                        id: '123',
+                        email: 'user@example.com',
+                        name: 'John Doe',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        [HTTP_STATUS.BAD_REQUEST]: {
+          description: 'Validation error',
+          content: {
+            'application/json': {
+              schema: errorResponseSchema,
+              examples: errorExamples[400],
+            },
+          },
         },
       },
     },
@@ -56,6 +100,34 @@ export const authPaths = {
       responses: {
         [HTTP_STATUS.OK]: {
           description: 'Login successful',
+          content: {
+            'application/json': {
+              schema: successResponseSchema(
+                {
+                  type: 'object',
+                  properties: {
+                    user: {
+                      type: 'object',
+                      properties: {
+                        id: { type: 'string' },
+                        email: { type: 'string' },
+                      },
+                    },
+                  },
+                },
+                { includeMeta: false }
+              ),
+            },
+          },
+        },
+        [HTTP_STATUS.UNAUTHORIZED]: {
+          description: 'Invalid credentials',
+          content: {
+            'application/json': {
+              schema: errorResponseSchema,
+              examples: errorExamples[401],
+            },
+          },
         },
       },
     },
@@ -68,6 +140,19 @@ export const authPaths = {
       responses: {
         [HTTP_STATUS.OK]: {
           description: 'Logout successful',
+          content: {
+            'application/json': {
+              schema: successResponseSchema(
+                {
+                  type: 'object',
+                  properties: {
+                    message: { type: 'string' },
+                  },
+                },
+                { includeMeta: false }
+              ),
+            },
+          },
         },
       },
     },
@@ -83,19 +168,31 @@ export const authPaths = {
           description: 'User data returned',
           content: {
             'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  user: {
-                    type: 'object',
-                    properties: {
-                      id: { type: 'string' },
-                      email: { type: 'string' },
-                      name: { type: 'string' },
+              schema: successResponseSchema(
+                {
+                  type: 'object',
+                  properties: {
+                    user: {
+                      type: 'object',
+                      properties: {
+                        id: { type: 'string' },
+                        email: { type: 'string' },
+                        name: { type: 'string' },
+                      },
                     },
                   },
                 },
-              },
+                { includeMeta: false }
+              ),
+            },
+          },
+        },
+        [HTTP_STATUS.UNAUTHORIZED]: {
+          description: 'Not authenticated',
+          content: {
+            'application/json': {
+              schema: errorResponseSchema,
+              examples: errorExamples[401],
             },
           },
         },

@@ -1,0 +1,45 @@
+{
+  "name": "flux-stack",
+  "version": "1.0.0",
+  "description": "Production-ready SaaS starter with Hono + Drizzle + Bun + Zod + Better Auth",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "start": "bun dist/index.js",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write 'src/**/*.ts'",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "bash scripts/migrate-docker.sh",
+    "db:studio": "drizzle-kit studio",
+    "check": "bun run format && bun run lint && bunx tsc --noEmit && bun run build"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "^1.2.0",
+    "better-auth": "^1.4.13",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.45.1",
+    "hono": "^4.11.4",
+    "hono-pino": "^0.10.3",
+    "pino": "^10.2.0",
+    "postgres": "^3.4.8",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@better-auth/cli": "^1.4.13",
+    "@scalar/hono-api-reference": "^0.9.33",
+    "@types/bun": "latest",
+    "@typescript-eslint/eslint-plugin": "^8.53.0",
+    "@typescript-eslint/parser": "^8.53.0",
+    "drizzle-kit": "^0.31.8",
+    "eslint": "^9.39.2",
+    "globals": "^17.0.0",
+    "pino-pretty": "^13.1.3",
+    "prettier": "^3.8.0",
+    "typescript": "^5"
+  }
+}

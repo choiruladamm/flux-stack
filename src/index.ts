@@ -14,7 +14,7 @@ import { dashboardRoutes } from './modules/dashboard/dashboard.routes';
 import { ROUTES, DEVELOPMENT_ORIGINS } from './constants';
 import { success } from './utils/response';
 
-const app = new Hono<AppEnv>();
+export const app = new Hono<AppEnv>();
 
 app.use('*', secureHeaders());
 
@@ -51,8 +51,23 @@ app.get(ROUTES.API.HEALTH, (c) => {
   });
 });
 
-app.on(['POST', 'GET'], ROUTES.AUTH.WILDCARD, (c) => {
-  return auth.handler(c.req.raw);
+app.on(['POST', 'GET'], ROUTES.AUTH.WILDCARD, async (c) => {
+  const res = await auth.handler(c.req.raw);
+
+  // If it's a JSON response and it's successful, we wrap it
+  if (res.status === 200 && res.headers.get('content-type')?.includes('application/json')) {
+    const data = await res.json();
+
+    // Copy headers (like Set-Cookie) to the context
+    res.headers.forEach((value, key) => {
+      c.header(key, value);
+    });
+
+    return success(c, data);
+  }
+
+  // Otherwise, return the response as is (for errors, redirects, or non-JSON)
+  return res;
 });
 
 app.route(ROUTES.USER.BASE, userRoutes);

@@ -1,4 +1,5 @@
 import { ROUTES, HTTP_STATUS } from '../../constants';
+import { successResponseSchema } from '../schemas/responses';
 
 export const healthPath = {
   [ROUTES.API.HEALTH]: {
@@ -10,14 +11,17 @@ export const healthPath = {
           description: 'Server is healthy',
           content: {
             'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  status: { type: 'string', example: 'ok' },
-                  timestamp: { type: 'string', example: '2026-01-16T04:00:00.000Z' },
-                  uptime: { type: 'number', example: 1234.56 },
+              schema: successResponseSchema(
+                {
+                  type: 'object',
+                  properties: {
+                    status: { type: 'string', example: 'ok' },
+                    timestamp: { type: 'string', example: '2026-01-16T04:00:00.000Z' },
+                    uptime: { type: 'number', example: 1234.56 },
+                  },
                 },
-              },
+                { includeMeta: false }
+              ),
             },
           },
         },

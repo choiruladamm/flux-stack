@@ -1,14 +1,17 @@
 import { Hono } from 'hono';
 import { requireAuth, type AppEnv } from '../../middleware/session';
 import { success } from '../../utils/response';
+import { validate } from '../../middleware/validate';
+import { paginationSchema, type PaginationInput } from './dashboard.schema';
 
 export const dashboardRoutes = new Hono<AppEnv>();
 
 /**
  * Get dashboard statistics
  */
-dashboardRoutes.get('/stats', requireAuth, async (c) => {
+dashboardRoutes.get('/stats', requireAuth, validate(paginationSchema, 'query'), async (c) => {
   const user = c.get('user')!;
+  const { page, limit } = c.get('validatedData') as PaginationInput;
 
   return success(c, {
     userId: user.id,
@@ -17,6 +20,12 @@ dashboardRoutes.get('/stats', requireAuth, async (c) => {
       totalViews: 1000,
       totalComments: 50,
     },
+    pagination: {
+      page,
+      limit,
+      total: 1, // Mock total
+      totalPages: 1,
+    },
     lastActivity: new Date().toISOString(),
   });
 });
@@ -24,8 +33,9 @@ dashboardRoutes.get('/stats', requireAuth, async (c) => {
 /**
  * Get user activity feed
  */
-dashboardRoutes.get('/activity', requireAuth, async (c) => {
+dashboardRoutes.get('/activity', requireAuth, validate(paginationSchema, 'query'), async (c) => {
   const user = c.get('user')!;
+  const { page, limit } = c.get('validatedData') as PaginationInput;
 
   return success(c, {
     userId: user.id,
@@ -41,6 +51,12 @@ dashboardRoutes.get('/activity', requireAuth, async (c) => {
         details: 'Profile information updated',
       },
     ],
+    pagination: {
+      page,
+      limit,
+      total: 2, // Mock total
+      totalPages: 1,
+    },
   });
 });
 

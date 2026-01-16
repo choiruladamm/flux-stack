@@ -1,6 +1,8 @@
 import { Hono } from 'hono';
 import { requireAuth, type AppEnv } from '../../middleware/session';
 import { success } from '../../utils/response';
+import { validate } from '../../middleware/validate';
+import { updateProfileSchema, type UpdateProfileInput } from './user.schema';
 
 export const userRoutes = new Hono<AppEnv>();
 
@@ -22,9 +24,9 @@ userRoutes.get('/profile', requireAuth, (c) => {
 /**
  * Update user profile
  */
-userRoutes.patch('/profile', requireAuth, async (c) => {
+userRoutes.patch('/profile', requireAuth, validate(updateProfileSchema), async (c) => {
   const user = c.get('user')!;
-  const body = await c.req.json();
+  const body = c.get('validatedData') as UpdateProfileInput;
 
   return success(c, {
     message: 'Profile updated successfully',

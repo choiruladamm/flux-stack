@@ -1,4 +1,5 @@
 import { ROUTES, HTTP_STATUS } from '../../constants';
+import { successResponseSchema, errorResponseSchema, errorExamples } from '../schemas/responses';
 
 export const userPaths = {
   [ROUTES.USER.PROFILE]: {
@@ -12,21 +13,30 @@ export const userPaths = {
           description: 'User profile data',
           content: {
             'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  id: { type: 'string' },
-                  email: { type: 'string', format: 'email' },
-                  name: { type: 'string' },
-                  emailVerified: { type: 'boolean' },
-                  createdAt: { type: 'string', format: 'date-time' },
+              schema: successResponseSchema(
+                {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'string' },
+                    email: { type: 'string', format: 'email' },
+                    name: { type: 'string' },
+                    emailVerified: { type: 'boolean' },
+                    createdAt: { type: 'string', format: 'date-time' },
+                  },
                 },
-              },
+                { includeMeta: false }
+              ),
             },
           },
         },
         [HTTP_STATUS.UNAUTHORIZED]: {
           description: 'Not authenticated',
+          content: {
+            'application/json': {
+              schema: errorResponseSchema,
+              examples: errorExamples[401],
+            },
+          },
         },
       },
     },
@@ -49,10 +59,45 @@ export const userPaths = {
       },
       responses: {
         [HTTP_STATUS.OK]: {
-          description: 'Profile updated',
+          description: 'Profile updated success',
+          content: {
+            'application/json': {
+              schema: successResponseSchema(
+                {
+                  type: 'object',
+                  properties: {
+                    message: { type: 'string' },
+                    user: {
+                      type: 'object',
+                      properties: {
+                        id: { type: 'string' },
+                        name: { type: 'string' },
+                      },
+                    },
+                  },
+                },
+                { includeMeta: false }
+              ),
+            },
+          },
         },
         [HTTP_STATUS.UNAUTHORIZED]: {
           description: 'Not authenticated',
+          content: {
+            'application/json': {
+              schema: errorResponseSchema,
+              examples: errorExamples[401],
+            },
+          },
+        },
+        [HTTP_STATUS.BAD_REQUEST]: {
+          description: 'Validation failed',
+          content: {
+            'application/json': {
+              schema: errorResponseSchema,
+              examples: errorExamples[400],
+            },
+          },
         },
       },
     },
@@ -66,9 +111,28 @@ export const userPaths = {
       responses: {
         [HTTP_STATUS.OK]: {
           description: 'Account deletion scheduled',
+          content: {
+            'application/json': {
+              schema: successResponseSchema(
+                {
+                  type: 'object',
+                  properties: {
+                    message: { type: 'string' },
+                  },
+                },
+                { includeMeta: false }
+              ),
+            },
+          },
         },
         [HTTP_STATUS.UNAUTHORIZED]: {
           description: 'Not authenticated',
+          content: {
+            'application/json': {
+              schema: errorResponseSchema,
+              examples: errorExamples[401],
+            },
+          },
         },
       },
     },
@@ -87,26 +151,53 @@ export const dashboardPaths = {
           description: 'Dashboard statistics',
           content: {
             'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  userId: { type: 'string' },
-                  stats: {
-                    type: 'object',
-                    properties: {
-                      totalPosts: { type: 'number' },
-                      totalViews: { type: 'number' },
-                      totalComments: { type: 'number' },
+              schema: successResponseSchema(
+                {
+                  type: 'object',
+                  properties: {
+                    userId: { type: 'string' },
+                    stats: {
+                      type: 'object',
+                      properties: {
+                        totalPosts: { type: 'number' },
+                        totalViews: { type: 'number' },
+                        totalComments: { type: 'number' },
+                      },
                     },
+                    pagination: {
+                      type: 'object',
+                      properties: {
+                        page: { type: 'number' },
+                        limit: { type: 'number' },
+                        total: { type: 'number' },
+                        totalPages: { type: 'number' },
+                      },
+                    },
+                    lastActivity: { type: 'string', format: 'date-time' },
                   },
-                  lastActivity: { type: 'string', format: 'date-time' },
                 },
-              },
+                { includeMeta: true, includePagination: true }
+              ),
             },
           },
         },
         [HTTP_STATUS.UNAUTHORIZED]: {
           description: 'Not authenticated',
+          content: {
+            'application/json': {
+              schema: errorResponseSchema,
+              examples: errorExamples[401],
+            },
+          },
+        },
+        [HTTP_STATUS.BAD_REQUEST]: {
+          description: 'Invalid pagination parameters',
+          content: {
+            'application/json': {
+              schema: errorResponseSchema,
+              examples: errorExamples[400],
+            },
+          },
         },
       },
     },
@@ -120,9 +211,57 @@ export const dashboardPaths = {
       responses: {
         [HTTP_STATUS.OK]: {
           description: 'Activity feed',
+          content: {
+            'application/json': {
+              schema: successResponseSchema(
+                {
+                  type: 'object',
+                  properties: {
+                    userId: { type: 'string' },
+                    activities: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          type: { type: 'string' },
+                          timestamp: { type: 'string', format: 'date-time' },
+                          details: { type: 'string' },
+                        },
+                      },
+                    },
+                    pagination: {
+                      type: 'object',
+                      properties: {
+                        page: { type: 'number' },
+                        limit: { type: 'number' },
+                        total: { type: 'number' },
+                        totalPages: { type: 'number' },
+                      },
+                    },
+                  },
+                },
+                { includeMeta: true, includePagination: true }
+              ),
+            },
+          },
         },
         [HTTP_STATUS.UNAUTHORIZED]: {
           description: 'Not authenticated',
+          content: {
+            'application/json': {
+              schema: errorResponseSchema,
+              examples: errorExamples[401],
+            },
+          },
+        },
+        [HTTP_STATUS.BAD_REQUEST]: {
+          description: 'Invalid pagination parameters',
+          content: {
+            'application/json': {
+              schema: errorResponseSchema,
+              examples: errorExamples[400],
+            },
+          },
         },
       },
     },
@@ -136,9 +275,36 @@ export const dashboardPaths = {
       responses: {
         [HTTP_STATUS.OK]: {
           description: 'Dashboard overview',
+          content: {
+            'application/json': {
+              schema: successResponseSchema(
+                {
+                  type: 'object',
+                  properties: {
+                    welcome: { type: 'string' },
+                    quickStats: {
+                      type: 'object',
+                      properties: {
+                        newNotifications: { type: 'number' },
+                        pendingTasks: { type: 'number' },
+                        recentActivity: { type: 'number' },
+                      },
+                    },
+                  },
+                },
+                { includeMeta: false }
+              ),
+            },
+          },
         },
         [HTTP_STATUS.UNAUTHORIZED]: {
           description: 'Not authenticated',
+          content: {
+            'application/json': {
+              schema: errorResponseSchema,
+              examples: errorExamples[401],
+            },
+          },
         },
       },
     },

@@ -1,17 +1,18 @@
-import { Hono } from 'hono';
-import { cors } from 'hono/cors';
-import { pinoLogger } from 'hono-pino';
-import { secureHeaders } from 'hono/secure-headers';
 import { apiReference } from '@scalar/hono-api-reference';
-import { logger } from './core/logger';
-import { env } from './core/env';
+import type { Context } from 'hono';
+import { Hono } from 'hono';
+import { pinoLogger } from 'hono-pino';
+import { cors } from 'hono/cors';
+import { secureHeaders } from 'hono/secure-headers';
+import { DEVELOPMENT_ORIGINS, HTTP_STATUS, ROUTES } from './constants';
 import { auth } from './core/auth';
+import { env } from './core/env';
+import { logger } from './core/logger';
 import { errorHandler } from './middleware/error-handler';
-import { sessionMiddleware, requireAuth, type AppEnv } from './middleware/session';
-import { openApiSpec } from './openapi/spec';
-import { userRoutes } from './modules/user/user.routes';
+import { requireAuth, sessionMiddleware, type AppEnv } from './middleware/session';
 import { dashboardRoutes } from './modules/dashboard/dashboard.routes';
-import { ROUTES, DEVELOPMENT_ORIGINS } from './constants';
+import { userRoutes } from './modules/user/user.routes';
+import { openApiSpec } from './openapi/spec';
 import { success } from './utils/response';
 
 export const app = new Hono<AppEnv>();
@@ -51,14 +52,21 @@ app.get(ROUTES.API.HEALTH, (c) => {
   });
 });
 
-app.on(['POST', 'GET'], ROUTES.AUTH.WILDCARD, async (c) => {
+/**
+ * Bridges Better Auth requests with standardized API response format
+ *
+ * @param {Context} c - Hono context
+ * @returns {Promise<Response>} Standardized success response or original Better Auth response
+ */
+const bridgeAuthResponse = async (c: Context) => {
   const res = await auth.handler(c.req.raw);
 
-  // If it's a JSON response and it's successful, we wrap it
-  if (res.status === 200 && res.headers.get('content-type')?.includes('application/json')) {
+  if (
+    res.status === HTTP_STATUS.OK &&
+    res.headers.get('content-type')?.includes('application/json')
+  ) {
     const data = await res.json();
 
-    // Copy headers (like Set-Cookie) to the context
     res.headers.forEach((value, key) => {
       c.header(key, value);
     });
@@ -66,9 +74,10 @@ app.on(['POST', 'GET'], ROUTES.AUTH.WILDCARD, async (c) => {
     return success(c, data);
   }
 
-  // Otherwise, return the response as is (for errors, redirects, or non-JSON)
   return res;
-});
+};
+
+app.on(['POST', 'GET'], ROUTES.AUTH.WILDCARD, bridgeAuthResponse);
 
 app.route(ROUTES.USER.BASE, userRoutes);
 app.route(ROUTES.DASHBOARD.BASE, dashboardRoutes);

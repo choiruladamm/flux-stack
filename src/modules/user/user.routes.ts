@@ -16,8 +16,8 @@ userRoutes.get('/profile', requireAuth, (c) => {
     id: user.id,
     email: user.email,
     name: user.name,
-    emailVerified: user.emailVerified,
-    createdAt: user.createdAt,
+    email_verified: user.emailVerified,
+    created_at: user.createdAt,
   });
 });
 

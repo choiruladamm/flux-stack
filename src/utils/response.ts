@@ -9,7 +9,7 @@ export interface PaginationMeta {
   page: number;
   limit: number;
   total: number;
-  totalPages: number;
+  total_pages: number;
 }
 
 /**
@@ -48,6 +48,30 @@ export interface ErrorResponse {
 export type ApiResponse<T = unknown> = SuccessResponse<T> | ErrorResponse;
 
 /**
+ * Recursively converts object keys to snake_case
+ *
+ * @param obj - Object to convert
+ * @returns Object with snake_case keys
+ */
+export const toSnakeCase = (obj: unknown): unknown => {
+  if (Array.isArray(obj)) {
+    return obj.map((v) => toSnakeCase(v));
+  }
+
+  if (obj !== null && typeof obj === 'object' && obj.constructor === Object) {
+    return Object.keys(obj).reduce((result, key) => {
+      const snakeKey = key.replace(/([A-Z])/g, '_$1').toLowerCase();
+      return {
+        ...result,
+        [snakeKey]: toSnakeCase((obj as Record<string, unknown>)[key]),
+      };
+    }, {});
+  }
+
+  return obj;
+};
+
+/**
  * Send success response
  *
  * @param c - Hono context
@@ -61,13 +85,13 @@ export const success = <T>(
   status: ContentfulStatusCode = HTTP_STATUS.OK as ContentfulStatusCode,
   meta?: ResponseMeta
 ): Response => {
-  const response: SuccessResponse<T> = {
+  const response: SuccessResponse<unknown> = {
     success: true,
-    data,
+    data: toSnakeCase(data),
   };
 
   if (meta) {
-    response.meta = meta;
+    response.meta = toSnakeCase(meta) as ResponseMeta;
   }
 
   return c.json(response, status);
@@ -98,7 +122,7 @@ export const error = (
   };
 
   if (details) {
-    response.error.details = details;
+    response.error.details = toSnakeCase(details);
   }
 
   return c.json(response, status);

@@ -20,8 +20,8 @@ export const userPaths = {
                     id: { type: 'string' },
                     email: { type: 'string', format: 'email' },
                     name: { type: 'string' },
-                    emailVerified: { type: 'boolean' },
-                    createdAt: { type: 'string', format: 'date-time' },
+                    email_verified: { type: 'boolean' },
+                    created_at: { type: 'string', format: 'date-time' },
                   },
                 },
                 { includeMeta: false }
@@ -155,25 +155,16 @@ export const dashboardPaths = {
                 {
                   type: 'object',
                   properties: {
-                    userId: { type: 'string' },
+                    user_id: { type: 'string' },
                     stats: {
                       type: 'object',
                       properties: {
-                        totalPosts: { type: 'number' },
-                        totalViews: { type: 'number' },
-                        totalComments: { type: 'number' },
+                        total_posts: { type: 'number' },
+                        total_views: { type: 'number' },
+                        total_comments: { type: 'number' },
                       },
                     },
-                    pagination: {
-                      type: 'object',
-                      properties: {
-                        page: { type: 'number' },
-                        limit: { type: 'number' },
-                        total: { type: 'number' },
-                        totalPages: { type: 'number' },
-                      },
-                    },
-                    lastActivity: { type: 'string', format: 'date-time' },
+                    last_activity: { type: 'string', format: 'date-time' },
                   },
                 },
                 { includeMeta: true, includePagination: true }
@@ -217,7 +208,7 @@ export const dashboardPaths = {
                 {
                   type: 'object',
                   properties: {
-                    userId: { type: 'string' },
+                    user_id: { type: 'string' },
                     activities: {
                       type: 'array',
                       items: {
@@ -227,15 +218,6 @@ export const dashboardPaths = {
                           timestamp: { type: 'string', format: 'date-time' },
                           details: { type: 'string' },
                         },
-                      },
-                    },
-                    pagination: {
-                      type: 'object',
-                      properties: {
-                        page: { type: 'number' },
-                        limit: { type: 'number' },
-                        total: { type: 'number' },
-                        totalPages: { type: 'number' },
                       },
                     },
                   },
@@ -282,12 +264,12 @@ export const dashboardPaths = {
                   type: 'object',
                   properties: {
                     welcome: { type: 'string' },
-                    quickStats: {
+                    quick_stats: {
                       type: 'object',
                       properties: {
-                        newNotifications: { type: 'number' },
-                        pendingTasks: { type: 'number' },
-                        recentActivity: { type: 'number' },
+                        new_notifications: { type: 'number' },
+                        pending_tasks: { type: 'number' },
+                        recent_activity: { type: 'number' },
                       },
                     },
                   },

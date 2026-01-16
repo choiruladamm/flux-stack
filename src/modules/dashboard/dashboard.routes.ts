@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { requireAuth, type AppEnv } from '../../middleware/session';
-import { success } from '../../utils/response';
+import { success, paginated } from '../../utils/response';
 import { validate } from '../../middleware/validate';
 import { paginationSchema, type PaginationInput } from './dashboard.schema';
 
@@ -13,21 +13,24 @@ dashboardRoutes.get('/stats', requireAuth, validate(paginationSchema, 'query'), 
   const user = c.get('user')!;
   const { page, limit } = c.get('validatedData') as PaginationInput;
 
-  return success(c, {
-    userId: user.id,
-    stats: {
-      totalPosts: 10,
-      totalViews: 1000,
-      totalComments: 50,
+  return paginated(
+    c,
+    {
+      user_id: user.id,
+      stats: {
+        total_posts: 10,
+        total_views: 1000,
+        total_comments: 50,
+      },
+      last_activity: new Date().toISOString(),
     },
-    pagination: {
+    {
       page,
       limit,
       total: 1, // Mock total
-      totalPages: 1,
-    },
-    lastActivity: new Date().toISOString(),
-  });
+      total_pages: 1,
+    }
+  );
 });
 
 /**
@@ -37,27 +40,30 @@ dashboardRoutes.get('/activity', requireAuth, validate(paginationSchema, 'query'
   const user = c.get('user')!;
   const { page, limit } = c.get('validatedData') as PaginationInput;
 
-  return success(c, {
-    userId: user.id,
-    activities: [
-      {
-        type: 'login',
-        timestamp: new Date().toISOString(),
-        details: 'User logged in',
-      },
-      {
-        type: 'profile_updated',
-        timestamp: new Date(Date.now() - 3600000).toISOString(),
-        details: 'Profile information updated',
-      },
-    ],
-    pagination: {
+  return paginated(
+    c,
+    {
+      user_id: user.id,
+      activities: [
+        {
+          type: 'login',
+          timestamp: new Date().toISOString(),
+          details: 'User logged in',
+        },
+        {
+          type: 'profile_updated',
+          timestamp: new Date(Date.now() - 3600000).toISOString(),
+          details: 'Profile information updated',
+        },
+      ],
+    },
+    {
       page,
       limit,
       total: 2, // Mock total
-      totalPages: 1,
-    },
-  });
+      total_pages: 1,
+    }
+  );
 });
 
 /**
@@ -68,10 +74,10 @@ dashboardRoutes.get('/overview', requireAuth, async (c) => {
 
   return success(c, {
     welcome: `Welcome back, ${user.name || user.email}!`,
-    quickStats: {
-      newNotifications: 5,
-      pendingTasks: 3,
-      recentActivity: 12,
+    quick_stats: {
+      new_notifications: 5,
+      pending_tasks: 3,
+      recent_activity: 12,
     },
   });
 });

@@ -40,7 +40,7 @@ export const successResponseSchema = (
           page: { type: 'number', description: 'Current page number' },
           limit: { type: 'number', description: 'Items per page' },
           total: { type: 'number', description: 'Total items' },
-          totalPages: { type: 'number', description: 'Total pages' },
+          total_pages: { type: 'number', description: 'Total pages' },
         },
       };
     }

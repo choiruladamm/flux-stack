@@ -39,6 +39,19 @@ describe('Response Utilities', () => {
 
       expect(json.meta?.timestamp).toBe('2026-01-16T00:00:00Z');
     });
+
+    it('should automatically convert data keys to snake_case', async () => {
+      const app = new Hono();
+      app.get('/snake-case', (c) =>
+        success(c, { myUserId: 1, nestedObject: { someValue: 'test' } })
+      );
+
+      const res = await app.request('/snake-case');
+      const json = (await res.json()) as any;
+
+      expect(json.data.my_user_id).toBe(1);
+      expect(json.data.nested_object.some_value).toBe('test');
+    });
   });
 
   describe('error()', () => {
@@ -95,7 +108,7 @@ describe('Response Utilities', () => {
           page: 1,
           limit: 10,
           total: 100,
-          totalPages: 10,
+          total_pages: 10,
         })
       );
 

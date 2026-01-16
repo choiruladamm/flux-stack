@@ -4,6 +4,7 @@ import { db } from './db';
 import * as schema from '../db/schema';
 import { env } from './env';
 import { logger } from './logger';
+import { RATE_LIMIT, DEVELOPMENT_ORIGINS } from '../constants';
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -13,7 +14,7 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: true,
+    requireEmailVerification: false,
     sendResetPassword: async ({ user, url }: { user: { email: string }; url: string }) => {
       logger.info({ email: user.email, url }, 'Password Reset Link');
       console.log('\n� PASSWORD RESET');
@@ -35,9 +36,12 @@ export const auth = betterAuth({
   },
 
   rateLimit: {
-    enabled: env.NODE_ENV === 'production',
-    window: 60,
-    max: 100,
+    enabled: true,
+    window: RATE_LIMIT.WINDOW_SECONDS,
+    max:
+      env.NODE_ENV === 'production'
+        ? RATE_LIMIT.MAX_REQUESTS_PRODUCTION
+        : RATE_LIMIT.MAX_REQUESTS_DEVELOPMENT,
   },
 
   baseURL: env.BASE_URL,
@@ -46,7 +50,7 @@ export const auth = betterAuth({
   trustedOrigins:
     env.NODE_ENV === 'production'
       ? process.env.ALLOWED_ORIGINS?.split(',') || []
-      : ['http://localhost:3000'],
+      : DEVELOPMENT_ORIGINS,
 });
 
 export type Session = typeof auth.$Infer.Session;

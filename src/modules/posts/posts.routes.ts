@@ -2,7 +2,6 @@ import { and, count, desc, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { ERROR_CODES, HTTP_STATUS } from '../../constants';
 import { db } from '../../core/db';
-import { post } from '../../db/schema';
 import { requireAuth, type AppEnv } from '../../middleware/session';
 import { validate } from '../../middleware/validate';
 import { error, paginated, success } from '../../utils/response';
@@ -15,7 +14,8 @@ import {
   type PaginationQuery,
   type PostIdParam,
   type UpdatePostInput,
-} from './posts.schema';
+} from './posts.validation';
+import { post } from './db/posts.schema';
 
 export const postRoutes = new Hono<AppEnv>();
 

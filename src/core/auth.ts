@@ -1,7 +1,7 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from './db';
-import * as schema from '../db/schema';
+import * as schema from '../modules/auth/db/auth.schema';
 import { env } from './env';
 import { logger } from './logger';
 import { RATE_LIMIT, DEVELOPMENT_ORIGINS } from '../constants';

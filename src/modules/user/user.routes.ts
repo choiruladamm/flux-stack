@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { requireAuth, type AppEnv } from '../../middleware/session';
 import { success } from '../../utils/response';
 import { validate } from '../../middleware/validate';
-import { updateProfileSchema, type UpdateProfileInput } from './user.schema';
+import { updateProfileSchema, type UpdateProfileInput } from './user.validation';
 
 export const userRoutes = new Hono<AppEnv>();
 

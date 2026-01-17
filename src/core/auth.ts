@@ -36,7 +36,7 @@ export const auth = betterAuth({
   },
 
   rateLimit: {
-    enabled: true,
+    enabled: env.NODE_ENV !== 'test',
     window: RATE_LIMIT.WINDOW_SECONDS,
     max:
       env.NODE_ENV === 'production'

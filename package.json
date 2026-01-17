@@ -17,7 +17,9 @@
     "db:generate": "drizzle-kit generate",
     "db:push": "bunx drizzle-kit push",
     "db:push:ci": "bunx drizzle-kit push --force",
-    "db:migrate": "bash scripts/migrate-docker.sh",
+    "db:migrate": "bun scripts/migrate.ts",
+    "db:migrate:docker": "bun scripts/migrate-docker.ts",
+    "db:migrate:native": "bun scripts/migrate-native.ts",
     "db:studio": "bunx drizzle-kit studio",
     "check": "bun run format && bun run lint && bunx tsc --noEmit && bun run build"
   },

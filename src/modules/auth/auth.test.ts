@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
-import { app } from '../../src/index';
-import type { SuccessResponse } from '../../src/utils/response';
+import { app } from '../../index';
+import type { SuccessResponse } from '../../utils/response';
 
 /**
  * Authentication Integration Tests

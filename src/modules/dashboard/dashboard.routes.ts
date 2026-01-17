@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { requireAuth, type AppEnv } from '../../middleware/session';
 import { success, paginated } from '../../utils/response';
 import { validate } from '../../middleware/validate';
-import { paginationSchema, type PaginationInput } from './dashboard.schema';
+import { paginationSchema, type PaginationInput } from './dashboard.validation';
 
 export const dashboardRoutes = new Hono<AppEnv>();
 

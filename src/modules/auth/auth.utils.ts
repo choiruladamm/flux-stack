@@ -1,4 +1,4 @@
-import { passwordSchema } from './auth.schema';
+import { passwordSchema } from './auth.validation';
 
 /**
  * Validates password against security requirements

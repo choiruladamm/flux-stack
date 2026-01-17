@@ -28,6 +28,7 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://user:password@localhost:5432/flux_test
+      JWT_SECRET: ci-test-secret-key-min-32-characters-long-for-testing
       BETTER_AUTH_SECRET: CI_TEST_SECRET
       BETTER_AUTH_URL: http://localhost:3000
       NODE_ENV: test

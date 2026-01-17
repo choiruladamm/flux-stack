@@ -1,5 +1,8 @@
+import { config } from 'dotenv';
 import { beforeAll, afterAll } from 'bun:test';
 import { db } from '../src/core/db';
+
+config();
 
 /**
  * Global test setup

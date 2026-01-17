@@ -6,7 +6,7 @@ import { MINUTES_TO_MS } from './time';
 export const RATE_LIMIT = {
   WINDOW_SECONDS: 60,
   MAX_REQUESTS_PRODUCTION: 100,
-  MAX_REQUESTS_DEVELOPMENT: 20,
+  MAX_REQUESTS_DEVELOPMENT: 50,
 } as const;
 
 /**

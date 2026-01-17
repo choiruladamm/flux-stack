@@ -12,6 +12,7 @@ import { errorHandler } from './middleware/error-handler';
 import { requireAuth, sessionMiddleware, type AppEnv } from './middleware/session';
 import { dashboardRoutes } from './modules/dashboard/dashboard.routes';
 import { userRoutes } from './modules/user/user.routes';
+import { postRoutes } from './modules/posts/posts.routes';
 import { openApiSpec } from './openapi/spec';
 import { success } from './utils/response';
 
@@ -81,6 +82,7 @@ app.on(['POST', 'GET'], ROUTES.AUTH.WILDCARD, bridgeAuthResponse);
 
 app.route(ROUTES.USER.BASE, userRoutes);
 app.route(ROUTES.DASHBOARD.BASE, dashboardRoutes);
+app.route(ROUTES.POSTS.BASE, postRoutes);
 
 app.get(ROUTES.ROOT, (c) => {
   return success(c, {

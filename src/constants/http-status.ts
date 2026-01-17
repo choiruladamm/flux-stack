@@ -1,23 +1,20 @@
 import type {
-  StatusCode,
-  SuccessStatusCode,
-  ClientErrorStatusCode,
-  ServerErrorStatusCode,
+  StatusCode
 } from 'hono/utils/http-status';
 
 export const HTTP_STATUS = {
-  OK: 200 as SuccessStatusCode,
-  CREATED: 201 as SuccessStatusCode,
-  NO_CONTENT: 204 as SuccessStatusCode,
-  BAD_REQUEST: 400 as ClientErrorStatusCode,
-  UNAUTHORIZED: 401 as ClientErrorStatusCode,
-  FORBIDDEN: 403 as ClientErrorStatusCode,
-  NOT_FOUND: 404 as ClientErrorStatusCode,
-  CONFLICT: 409 as ClientErrorStatusCode,
-  UNPROCESSABLE_ENTITY: 422 as ClientErrorStatusCode,
-  TOO_MANY_REQUESTS: 429 as ClientErrorStatusCode,
-  INTERNAL_SERVER_ERROR: 500 as ServerErrorStatusCode,
-  SERVICE_UNAVAILABLE: 503 as ServerErrorStatusCode,
+  OK: 200,
+  CREATED: 201,
+  NO_CONTENT: 204,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
+  UNPROCESSABLE_ENTITY: 422,
+  TOO_MANY_REQUESTS: 429,
+  INTERNAL_SERVER_ERROR: 500,
+  SERVICE_UNAVAILABLE: 503,
 } as const;
 
 export type HttpStatusCode = StatusCode;

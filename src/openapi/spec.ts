@@ -2,6 +2,7 @@ import { env } from '../core/env';
 import { healthPath } from './paths/health';
 import { authPaths } from './paths/auth';
 import { userPaths, dashboardPaths } from './paths/protected';
+import { postPaths } from './paths/posts';
 
 export const openApiSpec = {
   openapi: '3.1.0',
@@ -21,6 +22,7 @@ export const openApiSpec = {
     ...authPaths,
     ...userPaths,
     ...dashboardPaths,
+    ...postPaths,
   },
   components: {
     securitySchemes: {

@@ -28,6 +28,10 @@ export const ROUTES = {
     ACTIVITY: '/api/dashboard/activity',
     OVERVIEW: '/api/dashboard/overview',
   },
+  POSTS: {
+    BASE: '/api/posts',
+    DETAIL: '/api/posts/:id',
+  },
 } as const;
 
 /**

@@ -82,7 +82,7 @@ export const toSnakeCase = (obj: unknown): unknown => {
 export const success = <T>(
   c: Context,
   data: T,
-  status: ContentfulStatusCode = HTTP_STATUS.OK as ContentfulStatusCode,
+  status: ContentfulStatusCode = HTTP_STATUS.OK,
   meta?: ResponseMeta
 ): Response => {
   const response: SuccessResponse<unknown> = {
@@ -110,7 +110,7 @@ export const error = (
   c: Context,
   code: string,
   message: string,
-  status: ContentfulStatusCode = HTTP_STATUS.BAD_REQUEST as ContentfulStatusCode,
+  status: ContentfulStatusCode = HTTP_STATUS.BAD_REQUEST,
   details?: unknown
 ): Response => {
   const response: ErrorResponse = {

@@ -10,7 +10,7 @@
 1. Clone and install dependencies:
 
    ```bash
-   git clone <your-repo>
+   git clone https://github.com/choiruladamm/flux-stack
    cd flux-stack
    bun install
    ```
